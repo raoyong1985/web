@@ -374,7 +374,7 @@ body {
         order: 1;
     }
     .search-box {
-        border-radius: 10px;
+        
     }
     .folder-name {
         font-size: 13px;
@@ -433,7 +433,7 @@ body {
     }
     .search-box {
         padding: 8px 12px;
-        border-radius: 8px;
+        
     }
     .search-box input {
         font-size: 14px;
