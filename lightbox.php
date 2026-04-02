@@ -17,7 +17,7 @@ $imageName = basename($_GET['image'] ?? '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>浮光掠影</title>
-    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="stylesheet" href="css/lightbox.css">
 </head>
 <body>
     <div id="lightbox">
@@ -43,6 +43,6 @@ $imageName = basename($_GET['image'] ?? '');
             image: <?= json_encode($imageName) ?>
         };
     </script>
-    <script src="js/lampbox.js"></script>
+    <script src="js/lightbox.js"></script>
 </body>
 </html>
