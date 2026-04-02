@@ -9,7 +9,7 @@
  * CSS 变量
  * ========================================== */
 :root {
-    --bg-color: #212529;
+    --bg-color: #161618; /* 与 gallery.css 统一 */
     --text-color: #ffffff;
     --shadow-color: rgba(0, 0, 0, 0.3);
     --border-radius: 10px;
