@@ -1,0 +1,451 @@
+/* ==========================================
+ * 画廊首页样式
+ * 
+ * 包含：导航栏、搜索框、相册卡片网格、
+ * 分页、加载动画、响应式布局
+ * ========================================== */
+
+/* ==========================================
+ * CSS 变量（全局主题色和常用尺寸）
+ * ========================================== */
+:root {
+    --primary: #2d87f0;              /* 主题蓝 */
+    --primary-dark: #1a73e8;         /* 主题蓝深色 */
+    --bg: #161618;                   /* 页面背景 */
+    --card-bg: #1e1e21;              /* 卡片背景 */
+    --text: #e1e1e6;                 /* 主文字颜色 */
+    --text-secondary: #a9a9b2;       /* 次要文字颜色 */
+    --border: #2c2c30;               /* 边框颜色 */
+    --hover: #2d2d32;                /* 悬停背景 */
+    --shadow: rgba(0, 0, 0, 0.3);    /* 阴影 */
+    --pagination-active: var(--primary);
+    --gallery-gap: 20px;             /* 卡片间距 */
+    --border-radius: 12px;           /* 圆角 */
+    --thumbnail-min-width: 220px;    /* 缩略图最小宽度 */
+}
+
+/* ==========================================
+ * 基础样式
+ * ========================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding-top: 60px; /* 为固定导航栏留出空间 */
+}
+
+/* ==========================================
+ * 顶部导航栏
+ * ========================================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(30, 30, 33, 0.95); /* 半透明背景 */
+    backdrop-filter: blur(10px);               /* 毛玻璃效果 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    box-shadow: 0 2px 10px var(--shadow);
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-right: 30px;
+}
+
+/* ==========================================
+ * 搜索框
+ * ========================================== */
+.search-box-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 400px;
+    margin-left: 20px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    padding: 8px 15px;
+    width: 100%;
+    position: relative;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    padding-right: 25px;
+}
+
+/* 聚焦时显示边框和发光效果 */
+.search-box:focus-within {
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 0 2px rgba(45, 135, 240, 0.15);
+}
+
+.search-icon {
+    color: var(--text-secondary);
+    margin-right: 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.search-icon:hover {
+    color: var(--primary);
+}
+
+.clear-search {
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: none;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.clear-search:hover {
+    color: var(--primary);
+}
+
+/* ==========================================
+ * 主内容容器
+ * ========================================== */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.section-title {
+    margin: 20px 0 30px;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* ==========================================
+ * 画廊网格布局
+ * ========================================== */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--thumbnail-min-width), 1fr));
+    gap: var(--gallery-gap);
+    padding: 20px 0;
+}
+
+/* ==========================================
+ * 文件夹/卡片样式
+ * ========================================== */
+.folder, .card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    aspect-ratio: 2/3; /* 保持 2:3 竖图比例 */
+}
+
+/* 悬停时上浮 + 阴影加深 */
+.folder:hover, .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.folder img, .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(45deg, #333, #555); /* 图片加载前的占位背景 */
+}
+
+.folder-name {
+    padding: 10px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 文件名过长时省略号 */
+}
+
+/* ==========================================
+ * 无结果提示
+ * ========================================== */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2em;
+    color: var(--text-secondary);
+}
+
+/* ==========================================
+ * 分页样式
+ * ========================================== */
+.pagination {
+    margin: 20px auto 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 90%;
+}
+
+.pagination-btn {
+    padding: 8px 15px;
+    background: var(--card-bg);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 40px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+    background: var(--hover);
+    transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+    background: var(--pagination-active);
+    font-weight: bold;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+ * 加载动画
+ * ========================================== */
+.loading {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg);
+    z-index: 2000;
+}
+
+/* ==========================================
+ * 关闭按钮
+ * ========================================== */
+.close-btn {
+    position: fixed;
+    top: 10px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.8em;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    line-height: 1;
+}
+
+.close-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* ==========================================
+ * 页脚
+ * ========================================== */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+}
+
+/* ==========================================
+ * 淡入动画（卡片依次出现）
+ * ========================================== */
+.gallery-container > * {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* ==========================================
+ * 响应式布局
+ * ========================================== */
+
+/* 大屏幕（<1400px）：4列 */
+@media (max-width: 1399px) {
+    .gallery-container {
+        grid-template-columns: repeat(4, minmax(220px, 1fr));
+    }
+}
+
+/* 中等屏幕（<1024px）：3列，平板 */
+@media (max-width: 1023px) {
+    .gallery-container {
+        grid-template-columns: repeat(3, minmax(200px, 1fr));
+    }
+    .search-box-container {
+        max-width: 300px;
+        margin-left: auto;
+    }
+}
+
+/* 小屏幕（<768px）：2列 */
+@media (max-width: 767px) {
+    .gallery-container {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        gap: 12px;
+    }
+    .pagination {
+        gap: 6px;
+    }
+    .pagination-btn {
+        padding: 6px 12px;
+        min-width: 36px;
+    }
+    .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px 15px;
+        gap: 8px;
+    }
+    .search-box-container {
+        max-width: 300px;
+        margin-left: 0;
+        width: 100%;
+        order: 1;
+    }
+    .search-box {
+        border-radius: 10px;
+    }
+    .folder-name {
+        font-size: 13px;
+        padding: 8px;
+    }
+    .section-title {
+        font-size: 22px;
+    }
+    .container {
+        padding: 15px;
+    }
+    body {
+        padding-top: 75px;
+    }
+}
+
+/* 超小屏幕（<480px）：1列 */
+@media (max-width: 479px) {
+    .gallery-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .section-title {
+        font-size: 18px;
+        margin: 15px 0;
+    }
+    .close-btn {
+        top: 10px;
+        right: 10px;
+        font-size: 1.4em;
+        width: 36px;
+        height: 36px;
+    }
+    .loading {
+        width: 40px;
+        height: 40px;
+    }
+    .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px 12px;
+        gap: 6px;
+    }
+    .navbar-left {
+        flex: 1;
+    }
+    .logo {
+        font-size: 26px;
+        margin-right: 0;
+    }
+    .search-box-container {
+        max-width: none;
+        margin-left: 0;
+        width: 100%;
+        order: 1;
+    }
+    .search-box {
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    .search-box input {
+        font-size: 14px;
+    }
+    .folder-name {
+        font-size: 12px;
+        padding: 6px;
+    }
+    .container {
+        padding: 12px;
+    }
+    body {
+        padding-top: 80px;
+    }
+}
