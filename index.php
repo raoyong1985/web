@@ -44,14 +44,20 @@ if (isset($_GET['folder'])) {
         <!-- 图片网格 -->
         <div class="container">
             <div class="gallery-container">
+                <style>
+                .card .img-error { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#1e1e21; color:#666; font-size:13px; }
+                .card a { position:relative; display:block; }
+                </style>
                 <?php foreach ($images as $img): ?>
                     <div class="card">
                         <!-- 点击缩略图进入灯箱查看大图 -->
                         <a href="lightbox.php?folder=<?= urlencode($folderName) ?>&image=<?= urlencode($img) ?>">
-                            <img src="/folders/<?= urlencode($folderName) ?>/<?= urlencode($img) ?>" 
-                                 alt="<?= htmlspecialchars($img) ?>" loading="lazy">                                 
+                            <img src="/folders/<?= urlencode($folderName) ?>/<?= urlencode($img) ?>"
+                                 alt="<?= htmlspecialchars($img) ?>" loading="lazy"
+                                 onerror="this.style.display='none';this.parentNode.querySelector('.img-error').style.display='flex'">
+                            <span class="img-error" style="display:none">加载失败</span>
                         </a>
-                    </div>                   
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>

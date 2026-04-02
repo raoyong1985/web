@@ -95,12 +95,18 @@ async function loadFolders(page = 1, append = false) {
     }
 }
 
-/**
- * 无限滚动处理
- * 滚动到距底部100px时自动加载下一页
- */
+// ==========================================
+// 无限滚动处理（带节流）
+// ==========================================
+const SCROLL_THROTTLE_MS = 300;
+let lastScrollCheck = 0;
+
 function handleInfiniteScroll() {
     if (isSearching || currentPage >= totalPages) return;
+    const now = Date.now();
+    if (now - lastScrollCheck < SCROLL_THROTTLE_MS) return;
+    lastScrollCheck = now;
+    
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
         loadFolders(currentPage + 1, true);
     }

@@ -16,6 +16,7 @@ let currentIndex = 0;                 // 当前显示图片的索引
 let autoPlayTimer = null;             // 自动播放计时器
 const AUTO_PLAY_INTERVAL = 5000;      // 自动播放间隔（5秒）
 let isDetailMode = false;             // 是否处于细节放大模式
+let imgErrorCount = 0;                // 连续加载失败次数
 let isDragging = false;               // 是否正在拖拽图片
 let startX, startY;                   // 拖拽起始坐标
 let translateX = 0, translateY = 0;   // 图片当前平移距离
@@ -420,16 +421,28 @@ function updateLightboxImage() {
     const lightboxImg = document.getElementById('lightbox-img');
     const backgroundImg = document.getElementById('background-img');
 
+    lightboxImg.style.opacity = '0.3';
+    
     const img = new Image();
     img.onload = function() {
         lightboxImg.src = imagePath;
+        lightboxImg.style.opacity = '1';
         backgroundImg.style.backgroundImage = `url('${imagePath}')`;
+        imgErrorCount = 0; // 重置错误计数
         
         if (isDetailMode) {
             exitDetailMode();
         }
         
         updateAutoPlayIndicator();
+    };
+    img.onerror = function() {
+        imgErrorCount++;
+        lightboxImg.style.opacity = '1';
+        if (imgErrorCount >= 3) {
+            // 连续3张失败，认为图片真的加载不了，跳到下一张
+            navigate(1);
+        }
     };
     img.src = imagePath;
 }
